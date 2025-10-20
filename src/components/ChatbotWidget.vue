@@ -1,31 +1,96 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+
+const props = withDefaults(
+  defineProps<{
+    userId?: string
+    threadId?: string
+    companyId?: string
+  }>(),
+  {
+    userId: '',
+    threadId: '',
+    companyId: '',
+  },
+)
 
 const isOpen = ref(false)
 const message = ref('')
 const messages = ref<Array<{ text: string; sender: 'user' | 'bot' }>>([])
+const isLoading = ref(false)
+
+const STORAGE_KEY = 'tutku-chatbot-history'
 
 const toggleChat = () => {
   isOpen.value = !isOpen.value
 }
 
-const sendMessage = () => {
-  if (!message.value.trim()) return
+const loadChatHistory = () => {
+  console.log('loadChatHistory', props.userId, props.threadId, props.companyId)
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      messages.value = JSON.parse(stored)
+    }
+  } catch (error) {
+    console.error('Failed to load chat history:', error)
+  }
+}
 
-  messages.value.push({
-    text: message.value,
-    sender: 'user',
-  })
+const saveChatHistory = () => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.value))
+  } catch (error) {
+    console.error('Failed to save chat history:', error)
+  }
+}
+
+const sendMessage = async () => {
+  if (!message.value.trim() || isLoading.value) return
 
   const userMessage = message.value
   message.value = ''
 
-  setTimeout(() => {
+  messages.value.push({
+    text: userMessage,
+    sender: 'user',
+  })
+  saveChatHistory()
+
+  isLoading.value = true
+
+  try {
+    const response = await fetch('https://77l9cfpip2.execute-api.eu-central-1.amazonaws.com/chat', {
+      method: 'POST',
+      headers: {
+        'Authorization': props.userId,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: props.userId,
+        thread_id: props.threadId,
+        question: userMessage,
+        company_id: props.companyId,
+      }),
+    })
+
+    const data = await response.json()
+
     messages.value.push({
-      text: `Echo: ${userMessage}`,
+      text: data.answer,
       sender: 'bot',
     })
-  }, 500)
+    saveChatHistory()
+  } catch (error) {
+    console.error('API Error:', error)
+    messages.value.push({
+      text: 'Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.',
+      sender: 'bot',
+    })
+    saveChatHistory()
+  } finally {
+    isLoading.value = false
+  }
 }
 
 const handleKeyPress = (event: KeyboardEvent) => {
@@ -34,6 +99,10 @@ const handleKeyPress = (event: KeyboardEvent) => {
     sendMessage()
   }
 }
+
+onMounted(() => {
+  loadChatHistory()
+})
 </script>
 
 <template>
@@ -91,13 +160,23 @@ const handleKeyPress = (event: KeyboardEvent) => {
             <p class="text-sm leading-relaxed">{{ msg.text }}</p>
           </div>
         </div>
+
+        <div v-if="isLoading" class="flex justify-start">
+          <div class="max-w-[80%] rounded-2xl px-4 py-2.5 bg-white text-gray-800 rounded-bl-sm shadow-sm">
+            <div class="flex gap-1">
+              <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+              <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+              <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="p-4 bg-white border-t border-gray-200 rounded-b-2xl">
         <div class="flex items-end gap-2">
           <textarea v-model="message" @keypress="handleKeyPress" placeholder="Mesajınızı yazın..." rows="1"
             class="flex-1 resize-none rounded-xl border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
-          <button @click="sendMessage" :disabled="!message.trim()"
+          <button @click="sendMessage" :disabled="!message.trim() || isLoading"
             class="bg-indigo-600 text-white rounded-xl px-5 py-3 hover:bg-indigo-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex-shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
               stroke="currentColor" class="w-5 h-5">

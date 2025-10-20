@@ -1,48 +1,97 @@
-# tutku-ai-chatbot-widget
+# Tutku AI Chatbot Widget
 
-This template should help get you started developing with Vue 3 in Vite.
+Embeddable chatbot widget for customer websites. Single script integration with API backend.
 
-## Recommended IDE Setup
+## Features
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- Single script tag integration
+- Real-time chat with API backend
+- Chat history stored in localStorage
+- Loading indicators
+- Error handling
+- Responsive mobile design
+- Tailwind 4 styling
 
-## Recommended Browser Setup
+## Requirements
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- Node.js 20.19+ or 22.12+
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+## Development Setup
 
 ```sh
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+## Build for CDN
 
 ```sh
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+Output: `dist/tutku-chatbot-widget.iife.js`
+
+## Customer Integration
+
+Add script tag with configuration:
+
+```html
+<script
+  src="https://your-cdn-url.com/tutku-chatbot-widget.iife.js"
+  data-user-id="CUSTOMER_USER_ID"
+  data-thread-id="CUSTOMER_THREAD_ID"
+  data-company-id="CUSTOMER_COMPANY_ID"
+></script>
+```
+
+## Configuration
+
+- `data-user-id`: User/Authorization ID
+- `data-thread-id`: Thread ID for conversation
+- `data-company-id`: Company identifier
+
+## Local Testing
 
 ```sh
-npm run lint
+npm run build
 ```
+
+Open `local-test.html` in browser.
+
+## API
+
+Endpoint: `https://77l9cfpip2.execute-api.eu-central-1.amazonaws.com/chat`
+
+Request:
+
+```json
+{
+  "user_id": "string",
+  "thread_id": "string",
+  "question": "string",
+  "company_id": "string"
+}
+```
+
+Response:
+
+```json
+{
+  "thread_id": "string",
+  "answer": "string",
+  "contact_hr": boolean,
+  "user_email": string,
+  "admin_email": string
+}
+```
+
+## Tech Stack
+
+- Vue 3
+- TypeScript
+- Tailwind 4
+- Vite
+
+## Documentation
+
+See `CDN-DEPLOYMENT.md` for deployment instructions.
