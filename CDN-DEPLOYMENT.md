@@ -42,9 +42,8 @@ Customer adds this script tag to their website with configuration data attribute
 ```html
 <script
   src="https://your-cdn-url.com/tutku-chatbot-widget.iife.js"
-  data-user-id="CUSTOMER_USER_ID"
-  data-thread-id="CUSTOMER_THREAD_ID"
-  data-company-id="CUSTOMER_COMPANY_ID"
+  data-app-id="CUSTOMER_APP_ID"
+  data-app-name="CUSTOMER_APP_NAME"
 ></script>
 ```
 
@@ -63,9 +62,8 @@ Place script tag before closing `</body>` tag.
 
     <script
       src="https://your-cdn-url.com/tutku-chatbot-widget.iife.js"
-      data-user-id="a3aa1086-ff4e-47c6-81c4-01a1da01723b"
-      data-thread-id="thread_ePgFSxkFT0ft9I8XyTCMUhgl"
-      data-company-id="b475ce33-495c-492b-b84b-8f1fd3a20531"
+      data-app-id="Ottoo_Hr_1_Tutku"
+      data-app-name="TutkuAI"
     ></script>
   </body>
 </html>
@@ -82,9 +80,8 @@ Use `embed-example.html` to test locally:
 
 Widget auto-initializes on page load. Configuration is provided via data attributes:
 
-- `data-user-id`: User/Authorization ID
-- `data-thread-id`: Thread ID for conversation
-- `data-company-id`: Company identifier
+- `data-app-id`: Application ID
+- `data-app-name`: Application name
 
 ## Features
 

@@ -1,6 +1,6 @@
 {
   "name": "tutku-ai-chatbot-widget",
-  "version": "1.0.3",
+  "version": "3.0.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -17,6 +17,8 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.15",
+    "@types/markdown-it": "^14.1.2",
+    "markdown-it": "^14.1.0",
     "pinia": "^3.0.3",
     "tailwindcss": "^4.1.15",
     "vue": "^3.5.22"
