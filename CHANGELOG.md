@@ -1,5 +1,55 @@
 # Changelog
 
+## v3.1.1 (2025-01-24)
+
+### Fixed
+
+- Bot messages from chat history now properly render Markdown format
+- History API bot messages are now rendered with `md.render()` for consistent formatting
+- Fixed role check logic to properly detect non-user messages (bot/assistant/system roles)
+
+### Technical
+
+- Updated `fetchChatHistory()` to render non-user messages with Markdown: `text: item.role === 'user' ? item.content : md.render(item.content)`
+- Changed from checking `role === 'bot'` to checking `role === 'user'` for more robust role detection
+
+## v3.1.0 (2025-01-24)
+
+### Added
+
+- New chat button in header to start a fresh conversation
+- Confirmation modal for starting new chat
+- Ability to reset current chat session and start over
+- Send/loading state management with `isSending` flag
+- Disabled input and keyboard shortcuts during message sending
+
+### Technical
+
+- Added `showNewChatModal` state for modal visibility
+- Created `openNewChatModal()`, `closeNewChatModal()`, and `startNewChat()` functions
+- New chat flow: removes session from localStorage, resets state, calls init/history/questions APIs
+- Modal prevents clicks from closing when clicking inside the modal content
+- Removed unused `STORAGE_KEY_HISTORY` constant
+- Added `isSending` state to prevent multiple simultaneous sends
+- Modal repositioned inside chat window for better UX
+
+## v3.0.0 (2025-01-24)
+
+### Changed
+
+- Chat history now fetched from API instead of localStorage
+- New API integration: `/sales-chat/history` endpoint
+- History automatically refreshes after each bot response
+
+### Technical
+
+- Replaced `loadChatHistory()` with `fetchChatHistory()` API call
+- Removed `saveChatHistory()` function (no longer needed)
+- Added `HistoryItem` interface for API response typing
+- History fetches on mount after `initChat` completes
+- History refetches after bot responds to keep messages in sync
+- Connection loss warning still works with API-based history
+
 ## v2.1.0 (2025-01-24)
 
 ### Added
